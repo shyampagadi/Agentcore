@@ -518,6 +518,7 @@ python scripts/deploy_streamlit_production.py
 | `verify_agentcore_resources.py` | Verify resources | Verifies all resources exist and are configured | Verification report | No |
 | `get_resource_status.py` | Get resource status | Gets detailed status of specific resource | Resource details | No |
 | `cleanup_resources.py` | Cleanup resources | Deletes resources (use with caution!) | Deletion report | Yes |
+| `destroy_all.py` | Destroy all resources | Destroys ALL resources (complete teardown) | Destruction summary | Yes |
 | `test_deployment.py` | Test deployment | Validates all resources | Test results | No |
 | `test_scalability.py` | Test scalability | Load tests Runtime | Metrics report | No |
 | `deploy_streamlit_production.py` | Deploy UI to production | Creates ECS, ALB, Route 53 | Production URL | Yes |
@@ -637,6 +638,10 @@ python scripts/deploy_all.py --create-memory
 # Cleanup (Use with caution!)
 python scripts/cleanup_resources.py --dry-run  # Preview
 python scripts/cleanup_resources.py --resource-type all --force
+
+# Destroy ALL resources (Complete teardown)
+python scripts/destroy_all.py --dry-run  # Preview first!
+python scripts/destroy_all.py --force  # ⚠️ IRREVERSIBLE!
 
 ### File Locations
 

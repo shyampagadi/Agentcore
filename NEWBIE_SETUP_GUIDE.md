@@ -933,6 +933,104 @@ curl https://agent.yourdomain.com
 
 ---
 
+## Cleanup & Destruction
+
+### How to Destroy Everything and Start Over
+
+If you need to completely tear down all resources and start fresh:
+
+**Step 1: Preview What Will Be Deleted**
+```bash
+python scripts/destroy_all.py --dry-run
+```
+
+This shows you ALL resources that will be deleted without actually deleting anything.
+
+**Step 2: Review the List**
+The script will show ALL resources including:
+- ECS Services and Clusters
+- ECS Task Definitions
+- Application Load Balancers
+- ALB Listeners and Target Groups
+- Security Groups
+- Route 53 Records
+- ACM Certificates
+- AgentCore Runtime
+- AgentCore Memory
+- AgentCore Identity
+- CloudWatch Log Groups
+- ECR Repositories (with images)
+- Bedrock Guardrails
+- Cognito App Clients
+- Cognito User Pool
+- IAM Roles
+- **Orphaned resources** discovered by name pattern (`cloud-engineer-agent-*`)
+
+**Step 3: Destroy Resources**
+
+**Option A: Destroy Everything (with confirmation)**
+```bash
+python scripts/destroy_all.py
+# Type 'DESTROY ALL' when prompted
+```
+
+**Option B: Destroy Everything (no confirmation)**
+```bash
+python scripts/destroy_all.py --force
+# ⚠️ WARNING: This skips confirmation prompts!
+```
+
+**Option C: Keep Some Resources**
+```bash
+# Keep Cognito User Pool (for reuse)
+python scripts/destroy_all.py --skip-cognito
+
+# Keep ECS/ALB (production infrastructure)
+python scripts/destroy_all.py --skip-ecs
+
+# Keep both
+python scripts/destroy_all.py --skip-cognito --skip-ecs
+```
+
+**Step 4: Verify Everything is Deleted**
+```bash
+python scripts/list_agentcore_resources.py --resource-type all
+# Should show: No resources found
+```
+
+**Step 5: Verify .env File**
+```bash
+cat .env
+# Resource IDs should be removed
+```
+
+**⚠️ IMPORTANT WARNINGS:**
+- This is **IRREVERSIBLE** - resources cannot be recovered
+- Always use `--dry-run` first
+- Some resources may take 10-15 minutes to delete
+- Make sure you have backups if needed
+
+### Selective Cleanup
+
+If you only want to delete specific resources:
+
+**Delete Only AgentCore Resources:**
+```bash
+python scripts/cleanup_resources.py --resource-type all --force
+```
+
+**Delete Only Runtime:**
+```bash
+python scripts/cleanup_resources.py --resource-type runtime --force
+```
+
+**Delete Only Memory:**
+```bash
+python scripts/cleanup_resources.py --resource-type memory --force
+```
+
+---
+
 ## Success Checklist
 
 After completing all phases, you should have:

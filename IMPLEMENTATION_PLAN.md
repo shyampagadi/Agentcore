@@ -1996,10 +1996,9 @@ All automation scripts will be created to streamline the deployment process. The
 19. `scripts/list_agentcore_resources.py` - List all AgentCore resources (Memory, Identity, Runtime)
 20. `scripts/verify_agentcore_resources.py` - Verify all resources exist and are configured
 21. `scripts/get_resource_status.py` - Get detailed status of specific resource
-22. `scripts/cleanup_resources.py` - Cleanup/destroy resources (use with caution!)
-
-**Validation & Testing Scripts:**
-23. `scripts/validate_environment.py` - Environment validation
+22. `scripts/cleanup_resources.py` - Cleanup/destroy AgentCore resources (use with caution!)
+23. `scripts/destroy_all.py` - Destroy ALL resources including ECS, ALB, Cognito (complete teardown)
+24. `scripts/validate_environment.py` - Environment validation
 24. `scripts/test_deployment.py` - Deployment testing
 25. `scripts/test_scalability.py` - Scalability testing
 26. `scripts/update_config.py` - Configuration updates
@@ -3461,7 +3460,87 @@ python scripts/cleanup_resources.py --resource-type all --force
 
 ---
 
-### Script 24: `scripts/quick_start.sh`
+### Script 33: `scripts/destroy_all.py`
+
+**Purpose**: Destroy ALL resources created during setup (complete teardown)
+
+**Functionality:**
+- **Complete Cleanup**: Deletes all resources including ECS, ALB, Route 53, ACM, AgentCore, Cognito
+- **Orphaned Resource Discovery**: Automatically discovers resources by name pattern (cloud-engineer-agent-*)
+- **Dependency-Aware**: Deletes resources in correct order to handle dependencies
+- **Comprehensive Cleanup**: Handles listeners, target groups, security groups, IAM roles, app clients
+- **Safety Checks**: Dry-run mode and confirmation prompts
+- **Environment Cleanup**: Updates .env file to remove deleted resource IDs
+- **Retry Logic**: Retries security groups that might be in use initially
+
+**Input Parameters:**
+- `--dry-run`: Show what would be deleted without actually deleting
+- `--force`: Skip confirmation prompts (DANGEROUS!)
+- `--skip-cognito`: Skip Cognito User Pool deletion (keep for reuse)
+- `--skip-ecs`: Skip ECS/ALB deletion (keep production infrastructure)
+- `--region`: AWS region (default: from env or us-east-2)
+
+**Deletion Order:**
+1. ECS Services (stop tasks first)
+2. ECS Task Definitions (deregister)
+3. ECS Clusters
+4. Orphaned Target Groups (deregister targets)
+5. ALB Listeners
+6. ALB Target Groups (deregister targets)
+7. Application Load Balancers
+8. Route 53 Records
+9. ACM Certificates
+10. AgentCore Runtime
+11. AgentCore Memory
+12. AgentCore Identity
+13. CloudWatch Log Groups
+14. ECR Repositories (with images)
+15. Bedrock Guardrails
+16. Cognito App Clients
+17. Cognito User Pools (optional)
+18. IAM Roles (detach policies first)
+19. Security Groups (with retry)
+
+**Orphaned Resource Discovery:**
+- Discovers resources by name pattern: `cloud-engineer-agent-*`
+- Finds log groups, ECR repos, ECS clusters, ALBs, Cognito pools, IAM roles, security groups
+- Ensures no orphaned resources remain
+
+**Output:**
+- Complete list of resources to be deleted (from .env + discovered orphaned)
+- Confirmation prompt (unless --force)
+- Detailed deletion progress
+- Updated .env file
+- Final summary with verification steps
+
+**Usage:**
+```bash
+# Preview deletions (safe - always do this first!)
+python scripts/destroy_all.py --dry-run
+
+# Destroy everything (with confirmation)
+python scripts/destroy_all.py
+
+# Destroy everything except Cognito and ECS
+python scripts/destroy_all.py --skip-cognito --skip-ecs
+
+# Destroy everything without confirmation (DANGEROUS!)
+python scripts/destroy_all.py --force
+```
+
+**WARNING:**
+- This script PERMANENTLY DELETES ALL RESOURCES
+- This is IRREVERSIBLE - make sure you have backups if needed
+- Always use --dry-run first to preview
+- Some resources may take time to delete (wait for completion)
+
+**Documentation Requirements:**
+- Complete teardown guide
+- Safety warnings
+- Dependency order explanation
+- Recovery guide
+
+---
 
 **Purpose**: Quick start script for developers
 
