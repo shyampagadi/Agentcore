@@ -1,0 +1,119 @@
+# ============================================================================
+# Requirements File
+# ============================================================================
+# Python dependencies for Enterprise Cloud Engineer Agent
+# Install with: pip install -r requirements.txt
+#
+# For newbies:
+#   1. Create virtual environment: python -m venv .venv
+#   2. Activate: source .venv/bin/activate (Linux/Mac) or .venv\Scripts\activate (Windows)
+#   3. Install: pip install --upgrade pip && pip install -r requirements.txt
+#   4. Verify: python -c "import bedrock_agentcore; print('✅ Installed')"
+
+# ============================================================================
+# CORE AGENTCORE DEPENDENCIES
+# ============================================================================
+# AWS Bedrock AgentCore SDK - Required for runtime, memory, identity modules
+bedrock-agentcore>=0.1.0
+
+# AgentCore Starter Toolkit - Required for agentcore CLI commands
+# Provides utilities for deployment, configuration, and management
+bedrock-agentcore-starter-toolkit>=0.1.21
+
+# ============================================================================
+# EXISTING AGENT FRAMEWORK
+# ============================================================================
+# Strands Agents - Your existing agent framework
+# This will be wrapped by AgentCore Runtime
+strands-agents>=0.1.0
+
+# ============================================================================
+# AWS SDK
+# ============================================================================
+# Boto3 - AWS SDK for Python (required for all AWS service interactions)
+boto3>=1.34.0
+botocore>=1.34.0
+
+# ============================================================================
+# FRONTEND (STREAMLIT)
+# ============================================================================
+# Streamlit - Web UI framework for the application
+streamlit>=1.28.0
+
+# Streamlit Authenticator - Authentication components (optional, using Cognito instead)
+# Keeping for reference, but using custom Cognito integration
+# streamlit-authenticator>=0.2.3
+
+# ============================================================================
+# OBSERVABILITY & MONITORING
+# ============================================================================
+# AWS OpenTelemetry Distribution - Instrumentation for AWS services
+aws-opentelemetry-distro>=0.1.0
+
+# OpenTelemetry - Standard observability framework
+opentelemetry-api>=1.21.0
+opentelemetry-sdk>=1.21.0
+
+# OpenTelemetry exporters for AWS services
+opentelemetry-exporter-otlp>=1.21.0
+opentelemetry-instrumentation-boto3>=0.42.0
+
+# ============================================================================
+# MCP TOOLS (EXISTING)
+# ============================================================================
+# MCP (Model Context Protocol) - For existing agent tools
+mcp>=0.1.0
+
+# Strands Tools - Tool integration framework
+strands-tools>=0.1.0
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+# Python-dotenv - Load environment variables from .env file
+python-dotenv>=1.0.0
+
+# Pydantic - Data validation using Python type annotations
+pydantic>=2.5.0
+
+# Requests - HTTP library for API calls
+requests>=2.31.0
+
+# PyJWT - JWT token handling for Cognito authentication
+pyjwt>=2.8.0
+cryptography>=41.0.0  # Required by PyJWT
+
+# ============================================================================
+# TESTING
+# ============================================================================
+# Pytest - Testing framework
+pytest>=7.4.0
+pytest-mock>=3.12.0
+pytest-cov>=4.1.0  # Coverage reporting
+
+# ============================================================================
+# LOAD TESTING (FOR SCALABILITY TESTS)
+# ============================================================================
+# Locust - Load testing framework for scalability testing
+locust>=2.17.0
+
+# ============================================================================
+# DEVELOPMENT TOOLS (OPTIONAL)
+# ============================================================================
+# Black - Code formatter (optional, for code quality)
+# black>=23.12.0
+
+# Flake8 - Linter (optional, for code quality)
+# flake8>=6.1.0
+
+# MyPy - Type checker (optional, for type checking)
+# mypy>=1.7.0
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# - Pin versions for production deployments
+# - Update regularly for security patches
+# - Test after updating dependencies
+# - Check compatibility with Python 3.10+ and 3.11+
+

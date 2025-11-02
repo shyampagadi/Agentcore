@@ -1,0 +1,68 @@
+# CloudFormation template for base AWS resources
+# See IMPLEMENTATION_PLAN.md for deployment details
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Base AWS resources for Cloud Engineer Agent'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    Description: Environment name (dev, staging, prod)
+  
+  ProjectName:
+    Type: String
+    Default: cloud-engineer-agent
+    Description: Project name
+
+Resources:
+  # CloudWatch Log Groups
+  RuntimeLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/bedrock-agentcore/runtimes/${ProjectName}'
+      RetentionInDays: 7
+
+  MemoryLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/bedrock-agentcore/memory/${ProjectName}'
+      RetentionInDays: 7
+
+  StreamlitLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/cloud-engineer-agent/streamlit/${Environment}'
+      RetentionInDays: 7
+
+  # S3 Bucket for diagrams (optional)
+  DiagramsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${ProjectName}-diagrams-${Environment}'
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldDiagrams
+            Status: Enabled
+            ExpirationInDays: 30
+
+Outputs:
+  RuntimeLogGroupName:
+    Description: Runtime log group name
+    Value: !Ref RuntimeLogGroup
+    Export:
+      Name: !Sub '${ProjectName}-RuntimeLogGroup'
+
+  MemoryLogGroupName:
+    Description: Memory log group name
+    Value: !Ref MemoryLogGroup
+    Export:
+      Name: !Sub '${ProjectName}-MemoryLogGroup'
+
+  DiagramsBucketName:
+    Description: S3 bucket for diagrams
+    Value: !Ref DiagramsBucket
+    Export:
+      Name: !Sub '${ProjectName}-DiagramsBucket'
